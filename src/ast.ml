@@ -102,18 +102,19 @@ end
 
 module NT = T
 
-module Ntyped = struct
-  type 'a typed = { x : 'a; ty : NT.t } [@@deriving sexp]
-
-  let map (f : 'a -> 'b) { x; ty } = { x = f x; ty }
-  let eq a b = String.equal a.x b.x && NT.eq a.ty b.ty
-end
-
 module SMTtyped = struct
   type 'a typed = { x : 'a; ty : Smtty.t } [@@deriving sexp]
 
   let map (f : 'a -> 'b) { x; ty } = { x = f x; ty }
   let eq a b = String.equal a.x b.x && Smtty.eq a.ty b.ty
+end
+
+module Ntyped = struct
+  type 'a typed = { x : 'a; ty : NT.t } [@@deriving sexp]
+
+  let map (f : 'a -> 'b) { x; ty } = { x = f x; ty }
+  let eq a b = String.equal a.x b.x && NT.eq a.ty b.ty
+  let to_smttyped { x; ty } = SMTtyped.{ x; ty = NT.to_smtty ty }
 end
 
 module NNtyped = struct
