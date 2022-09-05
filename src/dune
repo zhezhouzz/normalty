@@ -1,7 +1,7 @@
 (library
  (public_name normalty)
  (name normalty)
- (wrapped false)
+ (wrapped true)
  (libraries utils core ocaml_parser)
  (modules
    ast
