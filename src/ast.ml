@@ -103,23 +103,29 @@ end
 module NT = T
 
 module SMTtyped = struct
-  type 'a typed = { x : 'a; ty : Smtty.t } [@@deriving sexp]
+  include Smtty
+
+  type 'a typed = { x : 'a; ty : t } [@@deriving sexp]
 
   let map (f : 'a -> 'b) { x; ty } = { x = f x; ty }
-  let eq a b = String.equal a.x b.x && Smtty.eq a.ty b.ty
+  let eq a b = String.equal a.x b.x && eq a.ty b.ty
 end
 
 module Ntyped = struct
-  type 'a typed = { x : 'a; ty : NT.t } [@@deriving sexp]
+  include NT
+
+  type 'a typed = { x : 'a; ty : t } [@@deriving sexp]
 
   let map (f : 'a -> 'b) { x; ty } = { x = f x; ty }
-  let eq a b = String.equal a.x b.x && NT.eq a.ty b.ty
-  let to_smttyped { x; ty } = SMTtyped.{ x; ty = NT.to_smtty ty }
+  let eq a b = String.equal a.x b.x && eq a.ty b.ty
+  let to_smttyped { x; ty } = SMTtyped.{ x; ty = to_smtty ty }
 end
 
 module NNtyped = struct
-  type 'a typed = { x : 'a; ty : NotatedT.t } [@@deriving sexp]
+  include NotatedT
+
+  type 'a typed = { x : 'a; ty : t } [@@deriving sexp]
 
   let map (f : 'a -> 'b) { x; ty } = { x = f x; ty }
-  let eq a b = String.equal a.x b.x && NotatedT.eq a.ty b.ty
+  let eq a b = String.equal a.x b.x && eq a.ty b.ty
 end
