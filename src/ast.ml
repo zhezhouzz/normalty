@@ -99,3 +99,26 @@ module NotatedT = struct
     | Some a1, Some a2 when String.equal a1 a2 -> T.eq b1 b2
     | _ -> false
 end
+
+module NT = T
+
+module Ntyped = struct
+  type 'a typed = { x : 'a; ty : NT.t } [@@deriving sexp]
+
+  let map (f : 'a -> 'b) { x; ty } = { x = f x; ty }
+  let eq a b = String.equal a.x b.x && NT.eq a.ty b.ty
+end
+
+module SMTtyped = struct
+  type 'a typed = { x : 'a; ty : Smtty.t } [@@deriving sexp]
+
+  let map (f : 'a -> 'b) { x; ty } = { x = f x; ty }
+  let eq a b = String.equal a.x b.x && Smtty.eq a.ty b.ty
+end
+
+module NNtyped = struct
+  type 'a typed = { x : 'a; ty : NotatedT.t } [@@deriving sexp]
+
+  let map (f : 'a -> 'b) { x; ty } = { x = f x; ty }
+  let eq a b = String.equal a.x b.x && NotatedT.eq a.ty b.ty
+end
