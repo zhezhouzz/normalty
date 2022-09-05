@@ -1,0 +1,11 @@
+(library
+ (public_name normalty)
+ (name normalty)
+ (wrapped false)
+ (libraries utils core ocaml_parser)
+ (modules
+   ast
+   frontend
+ )
+ (preprocess (pps ppx_optcomp ppx_compare ppx_sexp_conv))
+)
