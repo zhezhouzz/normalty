@@ -143,4 +143,5 @@ module NNtyped = struct
 
   let map (f : 'a -> 'b) { x; ty } = { x = f x; ty }
   let typed_eq a b = String.equal a.x b.x && eq a.ty b.ty
+  let to_ntyped { x; ty } = Ntyped.{ x; ty = snd ty }
 end
