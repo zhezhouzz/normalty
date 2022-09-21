@@ -60,7 +60,7 @@ and t_to_core_type_desc t =
   let mk0 name = Ptyp_constr (mknoloc @@ Lident name, []) in
   let mk1 name t = Ptyp_constr (mknoloc @@ Lident name, [ t ]) in
   let aux = function
-    | T.Ty_unknown -> failwith "ty_unknown die"
+    | T.Ty_unknown -> mk0 "unknown"
     | T.Ty_var name ->
         let res = Ptyp_var name in
         (* let () = *)
