@@ -9,7 +9,7 @@ module T = struct
 
   let _type_unify_ file line m t1 t2 =
     let open T in
-    (* let () = Printf.printf "unify %s --> %s\n" (layout t1) (layout t2) in *)
+    let () = Printf.printf "unify %s --> %s\n" (layout t1) (layout t2) in
     let rec unify m (t1, t2) =
       match (t1, t2) with
       | Ty_unknown, _ -> (m, t2)
