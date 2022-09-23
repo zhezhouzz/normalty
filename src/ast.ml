@@ -13,7 +13,7 @@ module T = struct
     let rec unify m (t1, t2) =
       match (t1, t2) with
       | Ty_unknown, _ -> (m, t2)
-      | _, Ty_unknown -> (m, t2)
+      | _, Ty_unknown -> (m, t1)
       | Ty_var n, t2 -> (
           match StrMap.find_opt m n with
           | Some t1 ->
