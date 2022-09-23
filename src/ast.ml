@@ -24,10 +24,10 @@ module T = struct
 
   let _type_unify_ file line m t1 t2 =
     let open T in
-    let () = Printf.printf "unify %s --> %s\n" (layout t1) (layout t2) in
+    (* let () = Printf.printf "unify %s --> %s\n" (layout t1) (layout t2) in *)
     let rec unify m (t1, t2) =
       let t1 = subst_m m t1 in
-      let () = Printf.printf "one %s --> %s\n" (layout t1) (layout t2) in
+      (* let () = Printf.printf "one %s --> %s\n" (layout t1) (layout t2) in *)
       match (t1, t2) with
       | Ty_unknown, _ -> (m, t2)
       | Ty_var n, t2 -> (
@@ -72,8 +72,8 @@ module T = struct
           (m, Ty_tuple ts)
       | _, Ty_unknown -> (m, t1)
       | _, Ty_var _ ->
-          (m, t1)
-          (* _failatwith file line "argment should not contain type var" *)
+          (* (m, t1) *)
+          _failatwith file line "argment should not contain type var"
       | _, _ -> (
           ( m,
             try _check_equality file line eq t1 t2
