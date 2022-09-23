@@ -7,28 +7,41 @@ module T = struct
   open Zzdatatype.Datatype
   open Sugar
 
+  let subst t (id, ty) =
+    let rec aux t =
+      match t with
+      | Ty_unknown | Ty_unit | Ty_int | Ty_bool -> t
+      | Ty_var x -> if String.equal x id then ty else t
+      | Ty_list x -> Ty_list (aux x)
+      | Ty_tree x -> Ty_tree (aux x)
+      | Ty_arrow (t1, t2) -> Ty_arrow (aux t1, aux t2)
+      | Ty_tuple xs -> Ty_tuple (List.map aux xs)
+      | Ty_constructor (id, args) -> Ty_constructor (id, List.map aux args)
+    in
+    aux t
+
+  let subst_m m t = StrMap.fold (fun id ty t -> subst t (id, ty)) m t
+
   let _type_unify_ file line m t1 t2 =
     let open T in
     let () = Printf.printf "unify %s --> %s\n" (layout t1) (layout t2) in
     let rec unify m (t1, t2) =
+      let t1 = subst_m m t1 in
       let () = Printf.printf "one %s --> %s\n" (layout t1) (layout t2) in
       match (t1, t2) with
       | Ty_unknown, _ -> (m, t2)
       | Ty_var n, t2 -> (
           match StrMap.find_opt m n with
-          | Some t1 -> (
-              match t2 with
-              | Ty_unknown -> (m, t1)
-              | _ ->
-                  let t = _check_equality file line eq t1 t2 in
-                  (m, t))
+          | Some _ -> _failatwith __FILE__ __LINE__ ""
           | None ->
               let m = StrMap.add n t2 m in
               (m, t2))
-      | _, Ty_unknown -> (m, t1)
       | Ty_list t1, Ty_list t2 ->
           let m, t = unify m (t1, t2) in
           (m, Ty_list t)
+      | Ty_tree t1, Ty_tree t2 ->
+          let m, t = unify m (t1, t2) in
+          (m, Ty_tree t)
       | Ty_constructor (id1, ts1), Ty_constructor (id2, ts2) ->
           let id = _check_equality file line String.equal id1 id2 in
           (* let () = *)
@@ -44,8 +57,6 @@ module T = struct
               (m, []) (List.combine ts1 ts2)
           in
           (m, Ty_constructor (id, ts))
-      | Ty_tree _, _ ->
-          _failatwith file line "built-in tree type, should not happen"
       | Ty_arrow (t11, t12), Ty_arrow (t21, t22) ->
           let m, t1 = unify m (t11, t21) in
           let m, t2 = unify m (t12, t22) in
@@ -59,6 +70,7 @@ module T = struct
               (m, []) (List.combine ts1 ts2)
           in
           (m, Ty_tuple ts)
+      | _, Ty_unknown -> (m, t1)
       | _, Ty_var _ ->
           (m, t1)
           (* _failatwith file line "argment should not contain type var" *)
