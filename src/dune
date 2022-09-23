@@ -4,6 +4,7 @@
  (wrapped true)
  (libraries utils core ocaml_parser)
  (modules
+   nt
    ast
    frontend
  )
