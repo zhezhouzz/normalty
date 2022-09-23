@@ -13,15 +13,18 @@ module T = struct
     let rec unify m (t1, t2) =
       match (t1, t2) with
       | Ty_unknown, _ -> (m, t2)
-      | _, Ty_unknown -> (m, t1)
       | Ty_var n, t2 -> (
           match StrMap.find_opt m n with
-          | Some t1 ->
-              let t = _check_equality file line eq t1 t2 in
-              (m, t)
+          | Some t1 -> (
+              match t2 with
+              | Ty_unknown -> (m, t1)
+              | _ ->
+                  let t = _check_equality file line eq t1 t2 in
+                  (m, t))
           | None ->
               let m = StrMap.add n t2 m in
               (m, t2))
+      | _, Ty_unknown -> (m, t1)
       | Ty_list t1, Ty_list t2 ->
           let m, t = unify m (t1, t2) in
           (m, Ty_list t)
