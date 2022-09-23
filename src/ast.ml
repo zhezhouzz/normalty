@@ -11,6 +11,7 @@ module T = struct
     let open T in
     let () = Printf.printf "unify %s --> %s\n" (layout t1) (layout t2) in
     let rec unify m (t1, t2) =
+      let () = Printf.printf "one %s --> %s\n" (layout t1) (layout t2) in
       match (t1, t2) with
       | Ty_unknown, _ -> (m, t2)
       | Ty_var n, t2 -> (
