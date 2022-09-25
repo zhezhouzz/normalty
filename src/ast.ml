@@ -81,7 +81,10 @@ module T = struct
               Printf.printf "%s != %s\n" (layout t1) (layout t2);
               raise e ))
     in
-    unify m (t1, t2)
+    try unify m (t1, t2)
+    with e ->
+      Printf.printf "Type unify error: %s ==> %s\n" (layout t1) (layout t2);
+      raise e
 
   let _type_unify file line t1 t2 =
     snd @@ _type_unify_ file line StrMap.empty t1 t2
