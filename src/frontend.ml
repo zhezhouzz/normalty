@@ -26,7 +26,9 @@ and core_type_desc_to_t t =
   | Ptyp_variant (_, _, _)
   | Ptyp_package _ | Ptyp_extension _ ->
       _failatwith __FILE__ __LINE__ "die"
-  | Ptyp_poly (_, _) -> _failatwith __FILE__ __LINE__ "unimp: poly"
+  | Ptyp_poly (_, _) ->
+      _failatwith __FILE__ __LINE__
+        (spf "unimp: poly: %s" @@ layout_ @@ desc_to_ct t)
   | Ptyp_var name ->
       (* let () = Printf.printf "parsing type var: %s\n" name in *)
       T.Ty_var name
