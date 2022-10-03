@@ -26,6 +26,18 @@ and core_type_desc_to_t t =
   | Ptyp_variant (_, _, _)
   | Ptyp_package _ | Ptyp_extension _ ->
       _failatwith __FILE__ __LINE__ "die"
+  | Ptyp_poly ([ lc ], ct) ->
+      _failatwith __FILE__ __LINE__
+        (spf "unimp: poly: lc: %s; ct: %s" lc.txt (layout_ ct))
+      (* (match (lc.txt, ct) with *)
+      (* | [ "unit" ], [] -> T.Ty_unit *)
+      (* | [ "bool" ], [] -> T.Ty_bool *)
+      (* | [ "int" ], [] -> T.Ty_int *)
+      (* (\* | [ "ref" ], [ t ] -> T.Ref (core_type_to_t t) *\) *)
+      (* | [ "list" ], [ t ] -> T.Ty_list (core_type_to_t t) *)
+      (* | [ c ], args -> T.Ty_constructor (c, List.map core_type_to_t args) *)
+      (* | _, _ -> *)
+      (*     failwith @@ Printf.sprintf "un-imp: %s" (layout_ @@ desc_to_ct t)) *)
   | Ptyp_poly (_, _) ->
       _failatwith __FILE__ __LINE__
         (spf "unimp: poly: %s" @@ layout_ @@ desc_to_ct t)
@@ -41,10 +53,6 @@ and core_type_desc_to_t t =
       | [ "int" ], [] -> T.Ty_int
       (* | [ "ref" ], [ t ] -> T.Ref (core_type_to_t t) *)
       | [ "list" ], [ t ] -> T.Ty_list (core_type_to_t t)
-      (* | [ "array" ], [ t ] -> T.Array (core_type_to_t t) *)
-      (* HACK: here, assume we know the name of abstact type name *)
-      (* | [ "t" ], [] -> T.Uninterp "t" *)
-      (* | [ a; "t" ], [] -> T.Uninterp Sugar.(spf "%s.t" a) *)
       | [ c ], args -> T.Ty_constructor (c, List.map core_type_to_t args)
       | _, _ -> failwith @@ Printf.sprintf "un-imp: %s" (layout_ @@ desc_to_ct t)
       )
