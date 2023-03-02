@@ -98,7 +98,11 @@ module T = struct
       | Ty_bool -> Smtty.Bool
       | Ty_int -> Smtty.Int
       | Ty_list _ | Ty_tree _ | Ty_constructor _ -> Smtty.Dt
-      | _ -> _failatwith __FILE__ __LINE__ "not a basic type"
+      | _ ->
+          let () =
+            Printf.printf "t: %s\n" @@ Sexplib.Sexp.to_string @@ sexp_of_t t
+          in
+          _failatwith __FILE__ __LINE__ "not a basic type"
     in
     aux t
 end
